@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace simple_azure_identity_dataservice.Controllers
+namespace DataServices.SimpleAzureIdentityDataService.Controllers
 {
     public class HomeController : Controller
     {
