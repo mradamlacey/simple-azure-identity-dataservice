@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace simple_azure_identity_dataservice
+namespace DataServices.SimpleAzureIdentityDataService
 {
     public class FilterConfig
     {

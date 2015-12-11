@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace simple_azure_identity_dataservice
+namespace DataServices.SimpleAzureIdentityDataService
 {
     public class BundleConfig
     {

@@ -46,6 +46,10 @@
     <DocumentationFile>bin\DataServices.SimpleAzureIdentityDataService.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Humanizer, Version=1.37.7.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Humanizer.1.37.7\lib\portable-win+net40+sl50+wp8+wpa81+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Humanizer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=1.2.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.4\lib\net45-full\log4net.dll</HintPath>
       <Private>True</Private>
@@ -174,15 +178,26 @@
     <Compile Include="Common\Enums\EnumHelpers.cs" />
     <Compile Include="Common\Enums\PropertyTypeEnum.cs" />
     <Compile Include="Common\GlobalExceptionHandler.cs" />
+    <Compile Include="Common\HypermediaMessageHandler.cs" />
+    <Compile Include="Common\HypermediaTransformerExtension.cs" />
+    <Compile Include="Common\IMessageTransformer.cs" />
     <Compile Include="Common\Log4NetExceptionLogger.cs" />
+    <Compile Include="Common\ObjectContentResponseEnricher.cs" />
+    <Compile Include="Common\PropertyHypermediaTransformer.cs" />
+    <Compile Include="Common\PropertyListHypermediaTransformer.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PropertyController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AuditInfo.cs" />
+    <Compile Include="Models\GeographicHierarchyLevel.cs" />
     <Compile Include="Models\GeoLocation.cs" />
+    <Compile Include="Models\HypermediaEditLink.cs" />
+    <Compile Include="Models\HypermediaLink.cs" />
+    <Compile Include="Models\HypermediaResource.cs" />
     <Compile Include="Models\Property.cs" />
+    <Compile Include="Models\PropertyAddress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ElasticsearchRepository.cs" />
   </ItemGroup>

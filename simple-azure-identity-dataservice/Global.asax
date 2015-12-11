@@ -1,1 +1,1 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="simple_azure_identity_dataservice.WebApiApplication" Language="C#" %>
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="DataServices.SimpleAzureIdentityDataService.WebApiApplication" Language="C#" %>

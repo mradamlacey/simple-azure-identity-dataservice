@@ -1,11 +1,15 @@
 using System.Web.Http;
 using WebActivatorEx;
-using simple_azure_identity_dataservice;
 using Swashbuckle.Application;
+using System;
+using System.Reflection;
+using System.IO;
+using DataServices.SimpleAzureIdentityDataService;
+using System.Configuration;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
-namespace simple_azure_identity_dataservice
+namespace DataServices.SimpleAzureIdentityDataService
 {
     public class SwaggerConfig
     {
@@ -20,7 +24,7 @@ namespace simple_azure_identity_dataservice
                         // However, there may be situations (e.g. proxy and load-balanced environments) where this does not
                         // resolve correctly. You can workaround this by providing your own code to determine the root URL.
                         //
-                        //c.RootUrl(req => GetRootUrlFromAppConfig());
+                        c.RootUrl(req => GetRootUrlFromAppConfig());
 
                         // If schemes are not explicitly provided in a Swagger 2.0 document, then the scheme used to access
                         // the docs is taken as the default. If your API supports multiple schemes and you want to be explicit
@@ -32,7 +36,7 @@ namespace simple_azure_identity_dataservice
                         // hold additional metadata for an API. Version and title are required but you can also provide
                         // additional fields by chaining methods off SingleApiVersion.
                         //
-                        c.SingleApiVersion("v1", "simple_azure_identity_dataservice");
+                        c.SingleApiVersion("v1", "Enterprise Information Management - Property Data Service");
 
                         // If your API has multiple versions, use "MultipleApiVersions" instead of "SingleApiVersion".
                         // In this case, you must provide a lambda that tells Swashbuckle which actions should be
@@ -62,16 +66,16 @@ namespace simple_azure_identity_dataservice
                         //    .Name("apiKey")
                         //    .In("header");
                         //
-                        //c.OAuth2("oauth2")
-                        //    .Description("OAuth2 Implicit Grant")
-                        //    .Flow("implicit")
-                        //    .AuthorizationUrl("http://petstore.swagger.wordnik.com/api/oauth/dialog")
-                        //    //.TokenUrl("https://tempuri.org/token")
-                        //    .Scopes(scopes =>
-                        //    {
-                        //        scopes.Add("read", "Read access to protected resources");
-                        //        scopes.Add("write", "Write access to protected resources");
-                        //    });
+                        c.OAuth2("oauth2")
+                            .Description("OAuth2 Authorization Grant")
+                            .Flow("authorization grant")
+                            .AuthorizationUrl("http://petstore.swagger.wordnik.com/api/oauth/dialog")
+                            .TokenUrl("https://tempuri.org/token")
+                            .Scopes(scopes =>
+                            {
+                                scopes.Add("read", "Read access to protected resources");
+                                scopes.Add("write", "Write access to protected resources");
+                            });
 
                         // Set this flag to omit descriptions for any actions decorated with the Obsolete attribute
                         //c.IgnoreObsoleteActions();
@@ -96,7 +100,7 @@ namespace simple_azure_identity_dataservice
                         // those comments into the generated docs and UI. You can enable this by providing the path to one or
                         // more Xml comment files.
                         //
-                        //c.IncludeXmlComments(GetXmlCommentsPath());
+                        c.IncludeXmlComments(SwaggerConfig.GetXmlCommentsPath());
 
                         // Swashbuckle makes a best attempt at generating Swagger compliant JSON schemas for the various types
                         // exposed in your API. However, there may be occasions when more control of the output is needed.
@@ -219,6 +223,20 @@ namespace simple_azure_identity_dataservice
                         //
                         //c.EnableOAuth2Support("test-client-id", "test-realm", "Swagger UI");
                     });
+        }
+
+        public static String GetRootUrlFromAppConfig()
+        {
+            return ConfigurationManager.AppSettings["ApiBaseUrl"];
+        }
+
+        public static string GetXmlCommentsPath()
+        {
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var commentsFileName = Assembly.GetExecutingAssembly().GetName().Name + ".XML";
+            var commentsFile = Path.Combine(baseDirectory, "bin", commentsFileName);
+
+            return commentsFile;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Web.Http.ExceptionHandling;
 
 using DataServices.SimpleAzureIdentityDataService.Common;
 
-namespace simple_azure_identity_dataservice
+namespace DataServices.SimpleAzureIdentityDataService
 {
     public static class WebApiConfig
     {
@@ -19,9 +19,16 @@ namespace simple_azure_identity_dataservice
             config.Services.Replace(typeof(IExceptionHandler), new GlobalExceptionHandler());
             config.Services.Add(typeof(IExceptionLogger), new Log4NetExceptionLogger());
 
+            config.MessageHandlers.Add(new HypermediaMessageHandler());
+
+            config.AddResponseTransformer(
+                new PropertyHypermediaTransformer()
+            );
+
             // Web API routes
             config.MapHttpAttributeRoutes();
 
+            // Catch all conventions for routing
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
