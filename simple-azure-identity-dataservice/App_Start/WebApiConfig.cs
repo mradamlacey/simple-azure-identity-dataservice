@@ -5,6 +5,8 @@ using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 
 using DataServices.SimpleAzureIdentityDataService.Common;
+using DataServices.SimpleAzureIdentityDataService.Common.HypermediaTransformers;
+using Newtonsoft.Json.Serialization;
 
 namespace DataServices.SimpleAzureIdentityDataService
 {
@@ -14,7 +16,10 @@ namespace DataServices.SimpleAzureIdentityDataService
         {
             // Configure and start Log4Net
             log4net.Config.XmlConfigurator.Configure();
-            
+
+            var json = config.Formatters.JsonFormatter;
+            json.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
             // Web API configuration and services
             config.Services.Replace(typeof(IExceptionHandler), new GlobalExceptionHandler());
             config.Services.Add(typeof(IExceptionLogger), new Log4NetExceptionLogger());
@@ -22,7 +27,9 @@ namespace DataServices.SimpleAzureIdentityDataService
             config.MessageHandlers.Add(new HypermediaMessageHandler());
 
             config.AddResponseTransformer(
-                new PropertyHypermediaTransformer()
+                new PropertyHypermediaTransformer(),
+                new PropertyListHypermediaTransformer(),
+                new SubscriptionHypermediaTransformer()
             );
 
             // Web API routes

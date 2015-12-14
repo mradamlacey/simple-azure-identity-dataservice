@@ -10,8 +10,9 @@ namespace DataServices.SimpleAzureIdentityDataService.Models
         public string Rel { get; private set; }
         public string Href { get; private set; }
         public string Title { get; private set; }
+        public string Method { get; private set; }
 
-        public HypermediaLink(string relation, string href, string title = null)
+        public HypermediaLink(string relation, string href, string title = null, string method = "GET")
         {
             if(relation == null)
             {
@@ -25,6 +26,7 @@ namespace DataServices.SimpleAzureIdentityDataService.Models
             Rel = relation;
             Href = href;
             Title = title;
+            Method = method;
         }
     }
 }
