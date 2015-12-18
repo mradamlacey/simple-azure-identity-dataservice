@@ -60,7 +60,7 @@ namespace DataServices.SimpleAzureIdentityDataService.Models
         /// <summary>
         /// Primary type of the property, whether Industrial, Office, or Retail
         /// </summary>
-        public PropertyTypes PropertyType { get; set; } 
+        public String PropertyType { get; set; } 
 
         /// <summary>
         /// Audit information for the property, its verified status, and when it was last changed and created
@@ -77,6 +77,41 @@ namespace DataServices.SimpleAzureIdentityDataService.Models
         /// to lowest (most specific)
         /// </summary>
         public List<GeographicHierarchyLevel> GeographicHierarchy { get; set; }
+        
+        /// <summary>
+        /// Gross square feet of the property
+        /// </summary>
+        public double GrossSquareFeet { get; set; }
+
+        /// <summary>
+        /// Total amount of rentable area for the property in square feet
+        /// </summary>
+        public double NetRentableAreaSquareFeet { get; set; }
+
+        /// <summary>
+        /// Current of amount of available square feet across all availabilities for the property in square feet
+        /// </summary>
+        public double AvailableSquareFeet { get; set; }
+
+        /// <summary>
+        /// Maximum amount of square footage space that is contiguous across all availabilities for the property
+        /// </summary>
+        public double MaxContiguousSquareFeet { get; set; }
+
+        /// <summary>
+        /// Year that the property was built on
+        /// </summary>
+        public int YearBuilt { get; set; }
+
+        /// <summary>
+        /// Month that the property was built on
+        /// </summary>
+        public int MonthBuilt { get; set; }
+
+        /// <summary>
+        /// Class of the property (e.g. A, B, C, D...)
+        /// </summary>
+        public String Class { get; set; }
 
         /// <summary>
         /// Full address of the property

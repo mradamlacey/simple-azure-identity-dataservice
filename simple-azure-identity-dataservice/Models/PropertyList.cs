@@ -17,6 +17,16 @@ namespace DataServices.SimpleAzureIdentityDataService.Models
         /// </summary>
         public int Total { get; set; }
 
+        /// <summary>
+        /// Current offset of the starting record of the result set
+        /// </summary>
+        public int Offset { get; set; }
+
+        /// <summary>
+        /// Number of records turned in this result set (limit of 1000)
+        /// </summary>
+        public int Limit { get; set; }///
+
         public PropertyList()
         {
             Items = new List<Property>();

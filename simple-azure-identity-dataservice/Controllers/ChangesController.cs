@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Swashbuckle.Swagger.Annotations;
 
 using DataServices.SimpleAzureIdentityDataService.Models;
+using DataServices.SimpleAzureIdentityDataService.Common.Security;
 
 namespace DataServices.SimpleAzureIdentityDataService.Controllers
 {
@@ -16,6 +17,7 @@ namespace DataServices.SimpleAzureIdentityDataService.Controllers
     /// API to retrieve changes via a subscription mechanism
     /// </summary>
     [RoutePrefix("api/changes")]
+    [ConfigurableAuthorizeAttribute]
     public class ChangesController : ApiController
     {
         /// <summary>

@@ -7,10 +7,12 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using DataServices.SimpleAzureIdentityDataService.Models;
-using DataServices.SimpleAzureIdentityDataService.Repositories;
 using Swashbuckle.Swagger.Annotations;
 using System.Web.Http.Description;
+
+using DataServices.SimpleAzureIdentityDataService.Models;
+using DataServices.SimpleAzureIdentityDataService.Repositories;
+using DataServices.SimpleAzureIdentityDataService.Common.Security;
 
 namespace DataServices.SimpleAzureIdentityDataService.Controllers
 {
@@ -18,6 +20,8 @@ namespace DataServices.SimpleAzureIdentityDataService.Controllers
     [RoutePrefix("api/properties")]
     [SwaggerResponse(statusCode: HttpStatusCode.Unauthorized, Description = "Not authorized to make this request")]
     [SwaggerResponse(statusCode: HttpStatusCode.Forbidden, Description = "Authentication data provided is forbidden.  Please re-request or refresh the access token or ensure correct format for authentication data")]
+    
+    [ConfigurableAuthorizeAttribute]
     public class PropertyController : ApiController
     {
 
@@ -37,14 +41,28 @@ namespace DataServices.SimpleAzureIdentityDataService.Controllers
         /// <summary>
         /// Returns a list of properties filtered by the specified filters
         /// </summary>
-        /// <returns></returns>
+        /// <param name="FullTextQuery">Text to use to match as a full text search across various attributes of a property</param>
+        /// <param name="Filters">Set of comparisons and predicates to filter the search results by</param>
+        /// <param name="Limit">Total number or results to return, maximum of 1000</param>
+        /// <param name="Offset">Starting record number to return, to be used to page across entire result set</param>
+        /// <returns>Matching property search results</returns>
         [Route("", Name = "GetCollection")]
         [HttpGet]
         [SwaggerResponse(statusCode: HttpStatusCode.BadRequest, Description = "Invalid search or filter criteria submitted")]
-        public async Task<PropertyList> Get()
+        public async Task<PropertyList> Get(String FullTextQuery = null, SearchFilters Filters = null, int Offset = 0, int Limit = 10)
         {
+            if(Limit > 1000)
+            {
+                throw new ArgumentException("Limit", "Limit should be greater than 0 and less than or equal to 1000");
+            }
+
             PropertyList resp = new PropertyList();
-            resp.Items = await elasticsearchRepository.QueryProperties(null);
+            var result = await elasticsearchRepository.QueryProperties(FullTextQuery, Filters, Offset, Limit);
+
+            resp.Items = result.Items;
+            resp.Total = result.Total;
+            resp.Offset = Offset;
+            resp.Limit = Limit;
 
             return resp;
         }
