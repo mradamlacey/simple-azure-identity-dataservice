@@ -37,7 +37,6 @@ namespace DataServices.SimpleAzureIdentityDataService.Controllers
             this.eimDataRepository = new EimDataRepository();
         }
 
-        // GET: api/Property
         /// <summary>
         /// Returns a list of properties filtered by the specified filters
         /// </summary>
@@ -46,10 +45,10 @@ namespace DataServices.SimpleAzureIdentityDataService.Controllers
         /// <param name="Limit">Total number or results to return, maximum of 1000</param>
         /// <param name="Offset">Starting record number to return, to be used to page across entire result set</param>
         /// <returns>Matching property search results</returns>
-        [Route("", Name = "GetCollection")]
+        [Route("", Name = "GetProperties")]
         [HttpGet]
         [SwaggerResponse(statusCode: HttpStatusCode.BadRequest, Description = "Invalid search or filter criteria submitted")]
-        public async Task<PropertyList> Get(String FullTextQuery = null, SearchFilters Filters = null, int Offset = 0, int Limit = 10)
+        public async Task<PropertyList> GetCollection(String FullTextQuery = null, SearchFilters Filters = null, int Offset = 0, int Limit = 10)
         {
             if(Limit > 1000)
             {

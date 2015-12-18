@@ -215,6 +215,7 @@
     <Compile Include="Common\GlobalExceptionHandler.cs" />
     <Compile Include="Common\HypermediaMessageHandler.cs" />
     <Compile Include="Common\HypermediaTransformerExtension.cs" />
+    <Compile Include="Common\HypermediaTransformers\SpaceListHypermediaTransformer.cs" />
     <Compile Include="Common\HypermediaTransformers\SubscriptionHypermediaTransformer.cs" />
     <Compile Include="Common\IMessageTransformer.cs" />
     <Compile Include="Common\Log4NetExceptionLogger.cs" />
@@ -225,6 +226,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ChangesController.cs" />
     <Compile Include="Controllers\PropertyController.cs" />
+    <Compile Include="Controllers\SpaceController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -238,6 +240,7 @@
     <Compile Include="Models\HypermediaResource.cs" />
     <Compile Include="Models\Property.cs" />
     <Compile Include="Models\PropertyAddress.cs" />
+    <Compile Include="Models\SpaceList.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Models\SubscriptionList.cs" />
     <Compile Include="Models\PropertyList.cs" />

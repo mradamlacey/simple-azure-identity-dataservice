@@ -15,7 +15,7 @@ namespace DataServices.SimpleAzureIdentityDataService.Common.HypermediaTransform
             var helper = httpResponseMessage.RequestMessage.GetUrlHelper();
             var baseUri = helper.Request.RequestUri.GetLeftPart(UriPartial.Path);
 
-            properties.AddLink(new HypermediaLink("self", helper.Link("GetCollection", new { })));
+            properties.AddLink(new HypermediaLink("self", helper.Link("GetProperties", new { })));
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             // Add paging links
@@ -42,7 +42,10 @@ namespace DataServices.SimpleAzureIdentityDataService.Common.HypermediaTransform
             {
                 var uri = helper.Request.RequestUri.GetLeftPart(UriPartial.Path);
 
-                item.AddLink(new HypermediaLink("self", uri + "/" + item.Id ));                
+                item.AddLink(new HypermediaLink("self", uri + "/" + item.Id ));
+
+                var spacesUri = uri.ToString().Replace("properties", "spaces");
+                item.AddLink(new HypermediaLink("spaces", spacesUri + "?propertyId=" + item.Id));
             });
         }
     }

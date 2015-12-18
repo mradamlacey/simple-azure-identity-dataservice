@@ -124,7 +124,7 @@ namespace DataServices.SimpleAzureIdentityDataService.Repositories
                 client.BaseAddress = new Uri(ConfigurationManager.AppSettings["ElasticsearchBaseUrl"]);
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                var url = String.Format("{0}/{1}//property/{2}", ConfigurationManager.AppSettings["ElasticsearchBaseUrl"], 
+                var url = String.Format("{0}/{1}/property/{2}", ConfigurationManager.AppSettings["ElasticsearchBaseUrl"], 
                     ConfigurationManager.AppSettings["ElasticsearchIndexName"],
                     Id);
 
@@ -290,6 +290,148 @@ namespace DataServices.SimpleAzureIdentityDataService.Repositories
 
                         ElasticsearchResult<Property> result = new ElasticsearchResult<Property>();
                         result.Items = properties;
+                        result.Total = Int32.Parse(responseObj["hits"]["total"].ToString());
+
+                        return result;
+                    }
+                    else
+                    {
+                        throw new ApplicationException("Invalid response from Elasticsearch");
+                    }
+                }
+                else
+                {
+                    throw new ApplicationException("Error from Elasticsearch");
+                }
+            }
+        }
+
+        public async Task<ElasticsearchResult<Space>> QuerySpaces(String FulltextQuery, SearchFilters Filters, int Offset = 0, int Limit = 10)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(ConfigurationManager.AppSettings["ElasticsearchBaseUrl"]);
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                var requestJObj = new JObject();
+                requestJObj.Add("query", new JObject());
+
+                var filter = new JObject();
+                if (Filters != null && Filters.Filters.Count > 0)
+                {
+                    var topLevelAndFilterClause = new JArray();
+                    filter["and"] = topLevelAndFilterClause;
+
+                    foreach (var f in Filters.Filters)
+                    {
+                        var mappingInfos = _GetMappingInfoByModelName(f.FieldName);
+                        if (mappingInfos.Count > 1)
+                        {
+                            // Don't support filtering when a single model name is actually an aggregated version of multiple elasticsearch fields
+                            continue;
+                        }
+
+                        var mappingInfo = mappingInfos.FirstOrDefault<MappingInfo>();
+                        if (mappingInfo == null)
+                        {
+                            continue;
+                        }
+
+                        if (mappingInfo.DataType == "fulltext" || mappingInfo.DataType == "match")
+                        {
+                            f.Predicates.ForEach(p => {
+
+                                var term = new JObject();
+                                term[_GetElasticsearchFieldNameForComparison(f.FieldName, p)] = p.Value;
+
+                                var newFilter = new JObject();
+                                newFilter["term"] = term;
+                                topLevelAndFilterClause.Add(newFilter);
+                            });
+                        }
+
+                        if (mappingInfo.DataType == "datetime")
+                        {
+                            // Dont support yet
+                        }
+
+                    }
+                }
+
+                requestJObj.Add("filter", filter);
+                requestJObj.Add("size", Limit);
+                requestJObj.Add("from", Offset);
+
+                if (!String.IsNullOrEmpty(FulltextQuery))
+                {
+                    var multiMatchObj = new JObject();
+                    multiMatchObj.Add("query", FulltextQuery);
+                    multiMatchObj.Add("type", "cross_fields");
+
+                    var fields = new JArray();
+                    fields.Add("property_address^5");
+                    fields.Add("ALTERNATE_ADDRESS");
+                    fields.Add("REGION_NAME");
+                    fields.Add("SUB_MARKET_NAME");
+                    fields.Add("NEIGHBORHOOD_NAME");
+                    fields.Add("STATE");
+                    fields.Add("COUNTRY");
+                    fields.Add("MARKET_NAME");
+                    fields.Add("DISTRICT_NAME");
+                    fields.Add("PROPERTY_NAME^5");
+
+                    multiMatchObj.Add("fields", fields);
+                    multiMatchObj.Add("operator", "and");
+
+                    var query = requestJObj["query"] as JObject;
+                    query.Add("multi_match", multiMatchObj);
+                }
+                else
+                {
+                    var query = requestJObj["query"] as JObject;
+                    query.Add("match_all", new JObject());
+                }
+
+                HttpContent content = new StringContent(requestJObj.ToString());
+                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+
+                var url = String.Format("{0}/{1}/lease-space-availability/_search", ConfigurationManager.AppSettings["ElasticsearchBaseUrl"], ConfigurationManager.AppSettings["ElasticsearchIndexName"]);
+
+                var reqOutput = new StringBuilder();
+                reqOutput.Append("Elasticsearch request: " + url);
+                reqOutput.Append(System.Environment.NewLine);
+                reqOutput.Append(requestJObj.ToString());
+
+                log.Debug(reqOutput.ToString());
+
+                var response = await client.PostAsync(url, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseStr = await response.Content.ReadAsStringAsync();
+                    JObject responseObj = JObject.Parse(responseStr);
+                    var spaces = new List<Space>();
+
+                    var respOutput = new StringBuilder();
+                    respOutput.Append("Elasticsearch response: " + url);
+                    respOutput.Append(System.Environment.NewLine);
+                    respOutput.Append(responseStr);
+
+                    log.Debug(respOutput.ToString());
+
+                    if (responseObj["hits"] != null && responseObj["hits"]["hits"] != null)
+                    {
+                        log.Debug("Success");
+
+                        JArray hits = responseObj["hits"]["hits"] as JArray;
+                        foreach (var hit in hits)
+                        {
+                            var source = hit["_source"];
+                            spaces.Add(_ParseSpaceSource(hit["_id"].ToString(), source));
+                        }
+
+                        ElasticsearchResult<Space> result = new ElasticsearchResult<Space>();
+                        result.Items = spaces;
                         result.Total = Int32.Parse(responseObj["hits"]["total"].ToString());
 
                         return result;
@@ -487,5 +629,15 @@ namespace DataServices.SimpleAzureIdentityDataService.Repositories
             return property;
         }
 
+        private Space _ParseSpaceSource(String Id, JToken source)
+        {
+            Space space = new Space();
+            space.Id = Id;
+
+            var property = JToken.Parse(source["property"].ToString());
+            space.PropertyId = property["id"].ToString(); ;
+
+            return space;
+        }
     }
 }
