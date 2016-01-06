@@ -30,7 +30,8 @@ namespace DataServices.SimpleAzureIdentityDataService
                 new PropertyHypermediaTransformer(),
                 new PropertyListHypermediaTransformer(),
                 new SubscriptionHypermediaTransformer(),
-                new SpaceListHypermediaTransformer()
+                new SpaceListHypermediaTransformer(),
+                new SpaceHypermediaTransformer()
             );
 
             // Web API routes

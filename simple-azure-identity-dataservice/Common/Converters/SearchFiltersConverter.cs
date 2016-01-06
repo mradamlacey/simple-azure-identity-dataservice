@@ -42,19 +42,20 @@ namespace DataServices.SimpleAzureIdentityDataService.Common.Converters
                     }
 
                     var predicateParts = s.Split(' ');
-                    if(predicateParts.Count() != 3)
+                    var predicateList = predicateParts.ToList<String>().Where<String>(part => { return !String.IsNullOrEmpty(part); });
+                    if(predicateList.Count() != 3)
                     {
                         throw new ArgumentException("value", "Invalid format for predicate" + s);
                     }
 
-                    var predicate = predicateParts[1] + " " + predicateParts[2];
-                    if (filterDict.ContainsKey(predicateParts[0]))
+                    var predicate = predicateList.ElementAt<string>(1) + " " + predicateList.ElementAt<string>(2);
+                    if (filterDict.ContainsKey(predicateList.ElementAt<string>(0)))
                     {
-                        filterDict[predicateParts[0]].Add(predicate);
+                        filterDict[predicateList.ElementAt<string>(0)].Add(predicate);
                     }
                     else
                     {
-                        filterDict.Add(predicateParts[0], new List<String>() { predicate });
+                        filterDict.Add(predicateList.ElementAt<string>(0), new List<String>() { predicate });
                     }
                     
                 }

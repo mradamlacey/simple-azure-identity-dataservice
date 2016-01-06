@@ -45,7 +45,7 @@ namespace DataServices.SimpleAzureIdentityDataService.Common.HypermediaTransform
                 item.AddLink(new HypermediaLink("self", uri + "/" + item.Id ));
 
                 var propertiesUri = uri.ToString().Replace("spaces", "properties");
-                item.AddLink(new HypermediaLink("property", propertiesUri + "/" + item.PropertyId ));
+                item.AddLink(new HypermediaLink("property",item.Property != null ? propertiesUri + "/" + item.Property.Id : propertiesUri + "/---" ));
             });
         }
     }

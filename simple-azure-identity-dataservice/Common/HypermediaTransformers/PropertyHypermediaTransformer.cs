@@ -14,8 +14,7 @@ namespace DataServices.SimpleAzureIdentityDataService.Common.HypermediaTransform
         {
             var helper = httpResponseMessage.RequestMessage.GetUrlHelper();
 
-            property.AddLink(new HypermediaLink("self", helper.Link("Get", new { })));
-
+            property.AddLink(new HypermediaLink("self", helper.Link("GetProperty", new { })));
         }
     }
 }

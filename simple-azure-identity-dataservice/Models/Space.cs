@@ -13,13 +13,11 @@ namespace DataServices.SimpleAzureIdentityDataService.Models
     {
         public String Id { get; set; }
 
-        public String PropertyId { get; set; }
-
-        public String Description { get; set; }
+        public String AvailabilityType { get; set; }
 
         public String Suite { get; set; }
 
-        public String FloorName { get; set; }
+        public String Floor { get; set; }
 
         public int FloorSequence { get; set; }
 
@@ -27,15 +25,26 @@ namespace DataServices.SimpleAzureIdentityDataService.Models
 
         public DateTime AvailableOn { get; set; }
 
-        public double RentalRateMinimum { get; set; }
+        public String ListingSource { get; set; }
 
-        public double RentalRateMaximum { get; set; }
+        public String ListingType { get; set; }
+
+        public String Status { get; set; }
+
+        public double TotalAreaSquareFeet { get; set; }
+        public double AvailableSquareFeet { get; set; }
+        public double AskingRentMonthly { get; set; }
+        public double AskingRentYearly { get; set; }
+        public double AskingPrice { get; set; }
 
         public AuditInfo Audit { get; set; }
+
+        public Property Property { get; set; }
 
         public Space()
         {
             Audit = new AuditInfo();
+            Property = new Property();
         }
 
     }

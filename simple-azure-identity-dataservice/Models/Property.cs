@@ -68,11 +68,6 @@ namespace DataServices.SimpleAzureIdentityDataService.Models
         public AuditInfo Audit { get; set; }
 
         /// <summary>
-        /// Indicator if the property has been verified and the associated information for the property can be trusted
-        /// </summary>
-        public bool IsVerified { get; set; }
-
-        /// <summary>
         /// Geographic hierarchy (Region/Market/etc...) for the property, this will be a list of levels from highest (most general)
         /// to lowest (most specific)
         /// </summary>

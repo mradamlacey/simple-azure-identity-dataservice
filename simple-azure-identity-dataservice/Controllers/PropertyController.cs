@@ -72,7 +72,7 @@ namespace DataServices.SimpleAzureIdentityDataService.Controllers
         /// <param name="id">ID of the property</param>
         /// <returns>Property information</returns>
         [SwaggerResponse(statusCode:HttpStatusCode.NotFound, Description = "Property with the specified ID does not exist")]
-        [Route("{propertyId}", Name = "Get")]
+        [Route("{propertyId}", Name = "GetProperty")]
         [HttpGet]
         public async Task<Property> Get(String propertyId)
         {

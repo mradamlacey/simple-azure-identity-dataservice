@@ -215,6 +215,7 @@
     <Compile Include="Common\GlobalExceptionHandler.cs" />
     <Compile Include="Common\HypermediaMessageHandler.cs" />
     <Compile Include="Common\HypermediaTransformerExtension.cs" />
+    <Compile Include="Common\HypermediaTransformers\SpaceHypermediaTransformer.cs" />
     <Compile Include="Common\HypermediaTransformers\SpaceListHypermediaTransformer.cs" />
     <Compile Include="Common\HypermediaTransformers\SubscriptionHypermediaTransformer.cs" />
     <Compile Include="Common\IMessageTransformer.cs" />
